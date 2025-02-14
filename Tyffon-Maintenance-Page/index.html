@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maintenance - Site</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #000;
+            color: #8a2be2;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            position: relative;
+            opacity: 0;
+            animation: fadeIn 1s forwards;
+            cursor: none;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+        .container {
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #111;
+            box-shadow: 0 0 10px rgba(138, 43, 226, 0.5);
+            transform: scale(0.8);
+            animation: popIn 0.5s forwards 0.5s;
+        }
+        @keyframes popIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        h1, p, .btn {
+            opacity: 0;
+            animation: fadeIn 1s forwards 0.8s;
+        }
+        .btn {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 10px 20px;
+            font-size: 1em;
+            color: #fff;
+            background-color: #8a2be2;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        .btn:hover {
+            background-color: #6a1bbd;
+            transform: scale(1.05);
+        }
+        .settings {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            cursor: pointer;
+            color: #fff;
+            display: flex;
+            align-items: center;
+        }
+        .settings span {
+            margin-left: 5px;
+            font-size: 1em;
+        }
+        .language-selector {
+            display: none;
+            position: absolute;
+            top: 40px;
+            left: 10px;
+            background-color: #222;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .language-selector select {
+            background: #8a2be2;
+            color: #fff;
+            border: none;
+            padding: 5px;
+            border-radius: 5px;
+        }
+        .custom-cursor {
+            width: 10px;
+            height: 10px;
+            background-color: #ffffff;
+            position: fixed;
+            top: 0;
+            left: 0;
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            transition: transform 0.05s linear;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
+        }
+        .maintenance-reason {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #222;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(138, 43, 226, 0.5);
+            color: #fff;
+            text-align: left;
+            max-width: 300px;
+            opacity: 0;
+            animation: fadeIn 1s forwards 1s;
+        }
+    </style>
+    <script>
+        function toggleLanguageSelector() {
+            var selector = document.getElementById('language-selector');
+            selector.style.display = selector.style.display === 'block' ? 'none' : 'block';
+        }
+
+        function changeLanguage() {
+            var lang = document.getElementById('language-select').value;
+            var translations = {
+                'en': { 
+                    title: 'Maintenance in Progress', 
+                    time: 'Indeterminate Time', 
+                    desc: 'We are fixing all major bugs to improve the experience.', 
+                    reason: 'Reason for Maintenance', 
+                    details: '- Fixing major bugs\n- Improving server stability\n- Enhancing UI experience', 
+                    discord: 'Go to Discord'
+                },
+                'fr': { 
+                    title: 'Maintenance en cours', 
+                    time: 'Temps indéterminé', 
+                    desc: 'Nous corrigeons tous les bugs majeurs pour améliorer l’expérience.', 
+                    reason: 'Raison de la maintenance', 
+                    details: '- Correction des bugs majeurs\n- Amélioration de la stabilité du serveur\n- Amélioration de l’interface utilisateur', 
+                    discord: 'Aller sur Discord'
+                },
+                'ru': { 
+                    title: 'Идет техническое обслуживание', 
+                    time: 'Неопределённое время', 
+                    desc: 'Мы исправляем все серьёзные ошибки для улучшения работы.', 
+                    reason: 'Причина технического обслуживания', 
+                    details: '- Исправление серьёзных ошибок\n- Улучшение стабильности сервера\n- Улучшение пользовательского интерфейса', 
+                    discord: 'Перейти в Discord'
+                },
+                'de': { 
+                    title: 'Wartungsarbeiten im Gange', 
+                    time: 'Unbestimmte Zeit', 
+                    desc: 'Wir beheben alle wichtigen Fehler zur Verbesserung der Erfahrung.', 
+                    reason: 'Wartungsgrund', 
+                    details: '- Behebung wichtiger Fehler\n- Verbesserung der Serverstabilität\n- Verbesserung der Benutzeroberfläche', 
+                    discord: 'Zu Discord gehen'
+                },
+                'es': { 
+                    title: 'Mantenimiento en curso', 
+                    time: 'Tiempo indeterminado', 
+                    desc: 'Estamos corrigiendo todos los errores importantes para mejorar la experiencia.', 
+                    reason: 'Razón del mantenimiento', 
+                    details: '- Corregir errores importantes\n- Mejorar la estabilidad del servidor\n- Mejorar la experiencia de la interfaz de usuario', 
+                    discord: 'Ir a Discord'
+                }
+            };
+
+            var elementsToFade = [document.getElementById('main-title'), document.getElementById('main-text'), document.getElementById('desc-text'), document.getElementById('maintenance-reason-content'), document.getElementById('discord-btn')];
+            elementsToFade.forEach(element => {
+                element.style.animation = 'fadeOut 0.5s forwards';
+            });
+
+            setTimeout(function() {
+                if (translations[lang]) {
+                    document.getElementById('main-title').innerText = translations[lang].title;
+                    document.getElementById('main-text').innerText = translations[lang].time;
+                    document.getElementById('desc-text').innerText = translations[lang].desc;
+                    document.getElementById('maintenance-reason-content').innerText = translations[lang].details;
+                    document.getElementById('discord-btn').innerText = translations[lang].discord;
+                }
+
+                elementsToFade.forEach(element => {
+                    element.style.animation = 'fadeIn 1s forwards';
+                });
+            }, 500); 
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const cursor = document.createElement("div");
+            cursor.classList.add("custom-cursor");
+            document.body.appendChild(cursor);
+
+            document.addEventListener("mousemove", function (e) {
+                cursor.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="settings" onclick="toggleLanguageSelector()">⚙️<span id="settings-text">Change Language</span></div>
+    <div id="language-selector" class="language-selector">
+        <select id="language-select" onchange="changeLanguage()">
+            <option value="en">English</option>
+            <option value="fr">Français</option>
+            <option value="ru">Русский</option>
+            <option value="de">Deutsch</option>
+            <option value="es">Español</option>
+        </select>
+    </div>
+    <div class="container">
+        <h1 id="main-title">Maintenance in Progress</h1>
+        <p id="main-text">Indeterminate Time</p>
+        <p id="desc-text">We are fixing all major bugs to improve the experience.</p>
+        <a href="https://discord.gg/9xyGwyyw9B" id="discord-btn" class="btn" target="_blank">Go to Discord</a>
+    </div>
+    <div class="maintenance-reason">
+        <h3 id="maintenance-reason">Reason for Maintenance</h3>
+        <pre id="maintenance-reason-content">- Fixing major bugs
+- Improving server stability
+- Enhancing UI experience</pre>
+    </div>
+</body>
+</html>
