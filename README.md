@@ -67,6 +67,6 @@ This project is licensed under the [MIT License](https://opensource.org/licenses
 ## 📬 Contact
 
 If you have any questions or suggestions, you can contact me at:  
-**Email**: your.email@example.com 📧
+**Discord**: [your.email@example.com](https://discord.gg/9xyGwyyw9B) 📧
 
 Thank you for visiting, and we hope to see you back on the site soon! ⏳🚀
